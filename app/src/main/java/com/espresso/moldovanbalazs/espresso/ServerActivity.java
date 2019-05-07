@@ -6,9 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import java.io.IOException;
 
 public class ServerActivity extends AppCompatActivity implements ServerSwitchCallback, ClientInterface{
     TextView serverStatusField, serverIpPortField, rcCarField, serverSwitchField;
@@ -48,6 +52,8 @@ public class ServerActivity extends AppCompatActivity implements ServerSwitchCal
                 }
             }
         });
+
+
     }
 
     @Override

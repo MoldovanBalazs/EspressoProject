@@ -99,9 +99,9 @@ public class ServerThread extends Thread {
                     communicationThread.run();
                 }
 
-                if(communicationThread.isInterrupted()) {
+                /*if(communicationThread.isInterrupted()) {
                     clientPresent.clientPresent(false);
-                }
+                }*/
                 /*TODO close connection
                 if received message from client CLOSE -> close connection from server :)
                  */

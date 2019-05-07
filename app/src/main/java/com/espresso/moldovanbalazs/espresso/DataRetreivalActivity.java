@@ -34,6 +34,7 @@ public class DataRetreivalActivity extends AppCompatActivity  {
     static TextView speedField;
     static TextView commentField;
     ScrollView scrollView;
+    Button ledButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +109,18 @@ public class DataRetreivalActivity extends AppCompatActivity  {
                 editor.apply();
             }
         });
+
+        ledButton = findViewById(R.id.buttonLed);
+        ledButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                finalMessageSender.setMessage(String.valueOf(29000));
+                new Thread(finalMessageSender).start();
+
+            }
+        });
+
     }
 
     @Override

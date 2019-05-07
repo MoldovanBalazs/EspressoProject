@@ -65,7 +65,7 @@ public class CommunicationThread extends Thread implements CommunicationCallback
 
                 message = input.readLine();
                 if(message == null) {
-                    this.clientSocket.close();
+                    //this.clientSocket.close();
                 } else {
 
                     this.data = gson.fromJson(message, DataModel.class);
@@ -82,11 +82,7 @@ public class CommunicationThread extends Thread implements CommunicationCallback
                     Log.d("CLIENT MESSAGE", this.data.toString());
                 }
             } catch (IOException e) {
-                try {
-                    this.clientSocket.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+               e.printStackTrace();
             }
 
         }
