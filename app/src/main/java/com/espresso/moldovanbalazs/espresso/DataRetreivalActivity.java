@@ -3,25 +3,37 @@ package com.espresso.moldovanbalazs.espresso;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class DataRetreivalActivity extends AppCompatActivity  {
+import static android.os.SystemClock.uptimeMillis;
 
-    float x1,x2,y1,y2;
+public class DataRetreivalActivity extends AppCompatActivity {
+
+    float x1, x2, y1, y2;
 
     public static final String CAR_MODE = "CarMode";
+    public static final String LED_MODE = "LedMode";
 
     private static boolean active = false;
-
+    double startTime = 0, milliSecondTime = 0, timeBuffer = 0, updateTime = 0;
+    int minutes, seconds, milliSeconds = 0;
     Button button;
+    Button ledButton;
+    boolean first;
+
+    double count = 0, time = 0;
 
     static TextView sonarLeftField;
     static TextView sonarRightField;
@@ -34,12 +46,33 @@ public class DataRetreivalActivity extends AppCompatActivity  {
     static TextView speedField;
     static TextView commentField;
     ScrollView scrollView;
-    Button ledButton;
+    Timer timer;
+
+    Handler timerHandler = new Handler();
+    Runnable timerRunnable = new Runnable() {
+        @Override
+        public void run() {
+//            milliSecondTime = SystemClock.uptimeMillis() - startTime;
+//            updateTime = timeBuffer + milliSecondTime;
+//            seconds = (int) (updateTime / 1000);
+//            minutes = seconds / 60;
+//            seconds %= 60;
+//           //milliSeconds = (int) (updateTime % 1000);
+            //minutes = TimeCounter.getMinutes();
+            seconds = (int) TimeThread.counter.get() / 1000;
+            timeFromStartField.setText(minutes + ":" + seconds);
+            timerHandler.postDelayed(this, 100);
+
+        }
+    };
+    private TimeCounter timeCounter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_retreival);
+        timerHandler.postDelayed(timerRunnable, 0);
 
         scrollView = findViewById(R.id.scroll);
         sonarLeftField = findViewById(R.id.sonarLeftField);
@@ -55,8 +88,8 @@ public class DataRetreivalActivity extends AppCompatActivity  {
 
         ServerThread serverThread = ServerThread.getInstance();
         MessageSender messageSender = null;
-        if(serverThread.isAlive()) {
-            if(serverThread.getClientSocket() != null && serverThread.getClientSocket().isConnected()) {
+        if (serverThread.isAlive()) {
+            if (serverThread.getClientSocket() != null && serverThread.getClientSocket().isConnected()) {
                 try {
                     messageSender = new MessageSender(ServerThread.getInstance().getClientSocket());
                 } catch (IOException e) {
@@ -70,14 +103,12 @@ public class DataRetreivalActivity extends AppCompatActivity  {
         SharedPreferences prefs = getSharedPreferences(CAR_MODE, MODE_PRIVATE);
         int buttonTag = prefs.getInt("mode", 0);
         if (buttonTag == 1) {
-
-
             button.setTag(1);
             button.setText("Auto");
         } else {
             button.setTag(0);
             button.setText("Manual");
-            if(messageSender != null) {
+            if (messageSender != null) {
                 messageSender.setMessage(String.valueOf(28000));
                 new Thread(messageSender).start();
             }
@@ -86,18 +117,18 @@ public class DataRetreivalActivity extends AppCompatActivity  {
 
 
         final MessageSender finalMessageSender = messageSender;
-        button.setOnClickListener(new View.OnClickListener(){
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final int status = (int) v.getTag();
-                if(status == 1) {
+                if (status == 1) {
                     button.setText("Manual");
                     v.setTag(0);
                     finalMessageSender.setMessage(String.valueOf(28000));
                     new Thread(finalMessageSender).start();
 
                 }
-                if(status == 0) {
+                if (status == 0) {
                     button.setText("Auto");
                     v.setTag(1);
                     finalMessageSender.setMessage(String.valueOf(28001));
@@ -111,15 +142,65 @@ public class DataRetreivalActivity extends AppCompatActivity  {
         });
 
         ledButton = findViewById(R.id.buttonLed);
+        SharedPreferences ledPrefs = getSharedPreferences(LED_MODE, MODE_PRIVATE);
+        int ledButtonTag = ledPrefs.getInt("mode", 0);
+        if (ledButtonTag == 1) {
+            ledButton.setTag(1);
+            ledButton.setText("Led2");
+        } else {
+            ledButton.setTag(0);
+            ledButton.setText("Led1");
+            if (messageSender != null) {
+                messageSender.setMessage(String.valueOf(29000));
+                new Thread(messageSender).start();
+            }
+
+        }
+
+        /*first = true;
+        timeCounter = TimeCounter.getInstance();
+        timeCounter.initTime();
+        new Thread(timeCounter).start();*/
+
+        TimeThread timeThread = new TimeThread();
+        timeThread.start();
+
+
         ledButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                finalMessageSender.setMessage(String.valueOf(29000));
-                new Thread(finalMessageSender).start();
+                final int ledStatus = (int) v.getTag();
 
+                if (ledStatus == 1) {
+                    ledButton.setText("Led1");
+                    v.setTag(0);
+                    //finalMessageSender.setMessage(String.valueOf(29000));
+                    //new Thread(finalMessageSender).start();
+                    //TimeCounter.onPause.set(false);
+
+                    //TimeCounter.getInstance().pauseCount();
+
+                    TimeThread.counting.set(false);
+
+
+                }
+                if (ledStatus == 0) {
+                    ledButton.setText("Led2");
+                    v.setTag(1);
+                    //finalMessageSender.setMessage(String.valueOf(29001));
+                    //new Thread(finalMessageSender).start();
+                    //TimeCounter.onPause.set(true);
+                    //TimeCounter.pauseEnd.set(TimeCounter.pauseEnd.get() + uptimeMillis());
+                    TimeThread.counting.set(true);
+                }
+                SharedPreferences.Editor editor = getSharedPreferences(LED_MODE, MODE_PRIVATE).edit();
+                editor.putInt("mode", (int) v.getTag());
+                editor.apply();
             }
         });
+
+
 
     }
 
@@ -140,7 +221,7 @@ public class DataRetreivalActivity extends AppCompatActivity  {
     }
 
     public boolean onTouchEvent(MotionEvent touchEvent) {
-        switch(touchEvent.getAction()) {
+        switch (touchEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 x1 = touchEvent.getX();
                 y1 = touchEvent.getY();
@@ -148,7 +229,7 @@ public class DataRetreivalActivity extends AppCompatActivity  {
             case MotionEvent.ACTION_UP:
                 x2 = touchEvent.getX();
                 y2 = touchEvent.getY();
-                if(x1 < x2) {
+                if (x1 < x2) {
                     super.onBackPressed();
                     overridePendingTransition(R.anim.right_in, R.anim.right_out);
                 }
@@ -158,7 +239,7 @@ public class DataRetreivalActivity extends AppCompatActivity  {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.right_in, R.anim.right_out);
     }

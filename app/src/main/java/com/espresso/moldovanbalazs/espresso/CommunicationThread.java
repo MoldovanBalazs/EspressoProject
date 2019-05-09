@@ -32,11 +32,20 @@ public class CommunicationThread extends Thread implements CommunicationCallback
     private String message;
     private DataModel data;
     private DataCallback dataCallback;
+    private DataRetreivalActivity activity;
 
     public CommunicationThread( ServerSocket serverSocket, Socket clientSocket) {
         this.serverSocket = serverSocket;
         this.clientSocket = clientSocket;
     }
+
+
+    public CommunicationThread(ServerSocket serverSocket, Socket clientSocket, DataRetreivalActivity activity) {
+        this.serverSocket = serverSocket;
+        this.clientSocket = clientSocket;
+        this.activity = activity;
+    }
+
 
     /*public CommunicationThread(ServerSocket serverSocket, Socket clientSocket, DataRetreivalActivity dataRetreivalActivity) {
         this.serverSocket = serverSocket;
@@ -64,6 +73,13 @@ public class CommunicationThread extends Thread implements CommunicationCallback
             try {
 
                 message = input.readLine();
+                Log.d("CLIENT MESSAGE", this.message);
+                /*activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        activity.commentField.setText(message);
+                    }
+                });*/
                 if(message == null) {
                     //this.clientSocket.close();
                 } else {
@@ -79,7 +95,7 @@ public class CommunicationThread extends Thread implements CommunicationCallback
                         new Thread(new UpdateDataRunnable(this.data)).start();
                     }
 
-                    Log.d("CLIENT MESSAGE", this.data.toString());
+
                 }
             } catch (IOException e) {
                e.printStackTrace();
