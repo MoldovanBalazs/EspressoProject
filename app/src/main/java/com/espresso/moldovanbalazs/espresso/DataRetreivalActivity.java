@@ -151,18 +151,18 @@ public class DataRetreivalActivity extends AppCompatActivity {
                 if (ledStatus == 1) {
                     ledButton.setText("Led1");
                     v.setTag(0);
-                    //finalMessageSender.setMessage(String.valueOf(29000));
-                    //new Thread(finalMessageSender).start();
-                    TimeThread.counting.set(false);
+                    finalMessageSender.setMessage(String.valueOf(29000));
+                    new Thread(finalMessageSender).start();
+                    //TimeThread.counting.set(false);
 
 
                 }
                 if (ledStatus == 0) {
                     ledButton.setText("Led2");
                     v.setTag(1);
-                    //finalMessageSender.setMessage(String.valueOf(29001));
-                    //new Thread(finalMessageSender).start();
-                    TimeThread.counting.set(true);
+                    finalMessageSender.setMessage(String.valueOf(29001));
+                    new Thread(finalMessageSender).start();
+                    //TimeThread.counting.set(true);
                 }
                 SharedPreferences.Editor editor = getSharedPreferences(LED_MODE, MODE_PRIVATE).edit();
                 editor.putInt("mode", (int) v.getTag());

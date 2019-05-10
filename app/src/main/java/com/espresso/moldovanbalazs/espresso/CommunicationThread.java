@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Time;
 import java.util.Random;
 
 
@@ -78,7 +79,7 @@ public class CommunicationThread extends Thread implements CommunicationCallback
             e.printStackTrace();
         }*/
 
-        byte[] byteData = new byte[16];
+        byte[] byteData = new byte[14];
 
         while (true) {
             try {
@@ -95,7 +96,7 @@ public class CommunicationThread extends Thread implements CommunicationCallback
 //                if(message == null) {
 //                    //this.clientSocket.close();
 //                } else
-                if (count >= 16) {
+                if (count >= byteData.length) {
 
                     //this.data = gson.fromJson(message, DataModel.class);
                     this.data = DiagnosisDataFetcher.decodeData(byteData);
@@ -106,6 +107,7 @@ public class CommunicationThread extends Thread implements CommunicationCallback
                                 activity.sonarLeftField.sett
                             }
                         });*/
+
                         new Thread(new UpdateDataRunnable(this.data)).start();
                     }
 
