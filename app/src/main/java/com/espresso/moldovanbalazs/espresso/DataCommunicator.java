@@ -49,19 +49,19 @@ public class DataCommunicator {
     }
 
     public static void setDataFields (DataModel dataModel) {
-        sonarRight = dataModel.getSonarRight();
-        sonarMiddle = dataModel.getSonarMiddle();
-        sonarLeft = dataModel.getSonarLeft();
+        sonarRight = dataModel.getInfrared3();
+        sonarMiddle = dataModel.getInfrared2();
+        sonarLeft = dataModel.getInfrared1();
         motorPWM = dataModel.getMotorPWM();
         servoPWM = dataModel.getServoPWM();
         speed = dataModel.getSpeed();
-        distance = dataModel.getDistance();
+        distance = dataModel.getInfrared4();
         batteryLevel = dataModel.getBatteryLevel();
         comment = dataModel.getComment();
     }
 
     public static DataModel getDataFields () {
-        return new DataModel(sonarRight, sonarMiddle, sonarLeft, motorPWM, servoPWM, speed, distance, batteryLevel, comment);
+        return new DataModel(sonarRight, sonarMiddle, sonarLeft, distance,motorPWM, servoPWM, speed,  batteryLevel, comment);
     }
 
 }

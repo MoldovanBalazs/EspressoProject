@@ -2,22 +2,17 @@ package com.espresso.moldovanbalazs.espresso;
 
 import android.content.SharedPreferences;
 import android.os.Handler;
-import android.os.Message;
-import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.Random;
 import java.util.Timer;
-import java.util.TimerTask;
-
-import static android.os.SystemClock.uptimeMillis;
 
 public class DataRetreivalActivity extends AppCompatActivity {
 
@@ -27,46 +22,35 @@ public class DataRetreivalActivity extends AppCompatActivity {
     public static final String LED_MODE = "LedMode";
 
     private static boolean active = false;
-    double startTime = 0, milliSecondTime = 0, timeBuffer = 0, updateTime = 0;
-    int minutes, seconds, milliSeconds = 0;
+    int minutes, seconds, hours;
     Button button;
     Button ledButton;
-    boolean first;
 
-    double count = 0, time = 0;
-
-    static TextView sonarLeftField;
-    static TextView sonarRightField;
-    static TextView sonarMiddleField;
+    static TextView infrared1Field;
+    static TextView infrared3Field;
+    static TextView infrared2Field;
     static TextView motorPWMField;
     static TextView servoPWMField;
     static TextView batteryLevelField;
     static TextView timeFromStartField;
-    static TextView distanceField;
+    static TextView infrared4Field;
     static TextView speedField;
     static TextView commentField;
     ScrollView scrollView;
-    Timer timer;
 
     Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
-//            milliSecondTime = SystemClock.uptimeMillis() - startTime;
-//            updateTime = timeBuffer + milliSecondTime;
-//            seconds = (int) (updateTime / 1000);
-//            minutes = seconds / 60;
-//            seconds %= 60;
-//           //milliSeconds = (int) (updateTime % 1000);
-            //minutes = TimeCounter.getMinutes();
             seconds = (int) TimeThread.counter.get() / 1000;
-            timeFromStartField.setText(minutes + ":" + seconds);
+            minutes = seconds / 60;
+            hours = minutes / 60;
+            seconds = seconds % 60;
+            timeFromStartField.setText(hours + ":" + minutes + ":" + seconds);
             timerHandler.postDelayed(this, 100);
 
         }
     };
-    private TimeCounter timeCounter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,14 +59,14 @@ public class DataRetreivalActivity extends AppCompatActivity {
         timerHandler.postDelayed(timerRunnable, 0);
 
         scrollView = findViewById(R.id.scroll);
-        sonarLeftField = findViewById(R.id.sonarLeftField);
-        sonarRightField = findViewById(R.id.sonarRightField);
-        sonarMiddleField = findViewById(R.id.sonarMiddleField);
+        infrared1Field = findViewById(R.id.infrared1Field);
+        infrared3Field = findViewById(R.id.infrared3Field);
+        infrared2Field = findViewById(R.id.infrared2Field);
         motorPWMField = findViewById(R.id.motorPWMField);
         servoPWMField = findViewById(R.id.servoPWMField);
         batteryLevelField = findViewById(R.id.batteryLevelField);
         timeFromStartField = findViewById(R.id.timeFromStartField);
-        distanceField = findViewById(R.id.distanceField);
+        infrared4Field = findViewById(R.id.infrared4Field);
         speedField = findViewById(R.id.speedField);
         commentField = findViewById(R.id.commentField);
 
@@ -112,9 +96,7 @@ public class DataRetreivalActivity extends AppCompatActivity {
                 messageSender.setMessage(String.valueOf(28000));
                 new Thread(messageSender).start();
             }
-
         }
-
 
         final MessageSender finalMessageSender = messageSender;
         button.setOnClickListener(new View.OnClickListener() {
@@ -133,7 +115,6 @@ public class DataRetreivalActivity extends AppCompatActivity {
                     v.setTag(1);
                     finalMessageSender.setMessage(String.valueOf(28001));
                     new Thread(finalMessageSender).start();
-
                 }
                 SharedPreferences.Editor editor = getSharedPreferences(CAR_MODE, MODE_PRIVATE).edit();
                 editor.putInt("mode", (int) v.getTag());
@@ -156,14 +137,9 @@ public class DataRetreivalActivity extends AppCompatActivity {
             }
 
         }
-
-        /*first = true;
-        timeCounter = TimeCounter.getInstance();
-        timeCounter.initTime();
-        new Thread(timeCounter).start();*/
-
-        TimeThread timeThread = new TimeThread();
-        timeThread.start();
+        if(!TimeThread.getInstance().isAlive()) {
+            TimeThread.getInstance().start();
+        }
 
 
         ledButton.setOnClickListener(new View.OnClickListener() {
@@ -177,10 +153,6 @@ public class DataRetreivalActivity extends AppCompatActivity {
                     v.setTag(0);
                     //finalMessageSender.setMessage(String.valueOf(29000));
                     //new Thread(finalMessageSender).start();
-                    //TimeCounter.onPause.set(false);
-
-                    //TimeCounter.getInstance().pauseCount();
-
                     TimeThread.counting.set(false);
 
 
@@ -190,8 +162,6 @@ public class DataRetreivalActivity extends AppCompatActivity {
                     v.setTag(1);
                     //finalMessageSender.setMessage(String.valueOf(29001));
                     //new Thread(finalMessageSender).start();
-                    //TimeCounter.onPause.set(true);
-                    //TimeCounter.pauseEnd.set(TimeCounter.pauseEnd.get() + uptimeMillis());
                     TimeThread.counting.set(true);
                 }
                 SharedPreferences.Editor editor = getSharedPreferences(LED_MODE, MODE_PRIVATE).edit();
@@ -200,8 +170,20 @@ public class DataRetreivalActivity extends AppCompatActivity {
             }
         });
 
-
-
+        /*new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    DataModel data = new DataModel(new Random().nextInt(), new Random().nextInt(), new Random().nextInt(), new Random().nextInt(), new Random().nextInt(), new Random().nextInt(), new Random().nextInt(), new Random().nextInt(),"");
+                    new Thread(new UpdateDataRunnable(data)).start();
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();*/
     }
 
     @Override

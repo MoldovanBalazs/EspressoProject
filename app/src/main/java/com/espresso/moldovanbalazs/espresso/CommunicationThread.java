@@ -9,13 +9,16 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Random;
 
 
-public class CommunicationThread extends Thread implements CommunicationCallback{
+public class CommunicationThread extends Thread implements CommunicationCallback {
 
     //private final DataRetreivalActivity activity = null;
     private ServerSocket serverSocket;
@@ -34,7 +37,7 @@ public class CommunicationThread extends Thread implements CommunicationCallback
     private DataCallback dataCallback;
     private DataRetreivalActivity activity;
 
-    public CommunicationThread( ServerSocket serverSocket, Socket clientSocket) {
+    public CommunicationThread(ServerSocket serverSocket, Socket clientSocket) {
         this.serverSocket = serverSocket;
         this.clientSocket = clientSocket;
     }
@@ -62,17 +65,25 @@ public class CommunicationThread extends Thread implements CommunicationCallback
         message = "";
         BufferedReader input = null;
         Gson gson = new Gson();
-
+        InputStream inputStream = null;
         try {
-            input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            inputStream = clientSocket.getInputStream();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        while(true) {
-            try {
+        /*try {
+            input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
 
-                message = input.readLine();
+        byte[] byteData = new byte[16];
+
+        while (true) {
+            try {
+                int count = inputStream.read(byteData);
+                //message = input.readLine();
                 Log.d("CLIENT MESSAGE", this.message);
                 /*activity.runOnUiThread(new Runnable() {
                     @Override
@@ -80,12 +91,15 @@ public class CommunicationThread extends Thread implements CommunicationCallback
                         activity.commentField.setText(message);
                     }
                 });*/
-                if(message == null) {
-                    //this.clientSocket.close();
-                } else {
 
-                    this.data = gson.fromJson(message, DataModel.class);
-                    if(this.data != null) {
+//                if(message == null) {
+//                    //this.clientSocket.close();
+//                } else
+                if (count >= 16) {
+
+                    //this.data = gson.fromJson(message, DataModel.class);
+                    this.data = DiagnosisDataFetcher.decodeData(byteData);
+                    if (this.data != null) {
                         /*activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -98,11 +112,9 @@ public class CommunicationThread extends Thread implements CommunicationCallback
 
                 }
             } catch (IOException e) {
-               e.printStackTrace();
+                e.printStackTrace();
             }
-
         }
-
     }
 
     public DataModel getClientData() {
@@ -114,7 +126,7 @@ public class CommunicationThread extends Thread implements CommunicationCallback
         return message;
     }
 
-    public interface DataCallback{
+    public interface DataCallback {
         public void updateDataModel(DataModel dataModel);
     }
 

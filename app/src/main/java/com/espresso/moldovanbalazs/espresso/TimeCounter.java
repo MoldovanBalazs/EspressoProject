@@ -28,14 +28,6 @@ public class TimeCounter implements Runnable {
         pauseEnd = new AtomicLong(0);
     }
 
-    public static int getMinutes() {
-        return minutes;
-    }
-
-    public static int getSeconds() {
-        return seconds;
-    }
-
     public static TimeCounter getInstance() {
         if (timeCounter == null) {
             return new TimeCounter();
@@ -60,7 +52,7 @@ public class TimeCounter implements Runnable {
             Log.d("TimeCounter", "while loop");
             if (!onPause.get()) {
                 milliSecondTime = SystemClock.uptimeMillis() - startTime;
-                //updateTime = timeBuffer.get() + milliSecondTime;
+                updateTime = timeBuffer.get() + milliSecondTime;
                 updateTime = milliSecondTime - (pauseEnd.get() - pauseStart);
                 seconds = (int) (updateTime / 1000);
                 minutes = seconds / 60;
@@ -74,8 +66,8 @@ public class TimeCounter implements Runnable {
                         updateable = false;
                     }
 
-                    //pauseEnd.sSystemClock.uptimeMillis();
-                    //startTimeAux += SystemClock.uptimeMillis() - milliSecondTime;
+
+                    startTimeAux += SystemClock.uptimeMillis() - milliSecondTime;
             }
             try {
                 sleep(100);

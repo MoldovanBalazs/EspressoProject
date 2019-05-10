@@ -15,6 +15,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
+
         android:text="Diagnosis Mode"
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,21 +52,21 @@
 
 
             <TextView
-                android:id="@+id/sonarMiddle"
+                android:id="@+id/infrared2"
                 android:layout_width="93dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/sonarRightField"
+                android:layout_below="@+id/infrared3Field"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                android:layout_marginStart="30dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="5dp"
-                android:text="Sonar Middle"
+                android:layout_marginStart="29dp"
+                android:layout_marginLeft="29dp"
+                android:layout_marginTop="-84dp"
+                android:text="Infrared2"
                 tools:layout_editor_absoluteX="16dp"
                 tools:layout_editor_absoluteY="60dp" />
 
             <TextView
-                android:id="@+id/sonarMiddleField"
+                android:id="@+id/infrared2Field"
                 android:layout_width="337dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -80,7 +81,7 @@
 
             <!-->copy <-->
             <TextView
-                android:id="@+id/sonarRight"
+                android:id="@+id/infrared1"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -89,12 +90,41 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginTop="20dp"
-                android:text="Sonar Right"
+                android:text="Infrared 1"
+                android:textSize="14sp"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="64dp" />
+
+            <TextView
+                android:id="@+id/infrared1Field"
+                android:layout_width="337dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/infrared1"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginStart="40dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="6dp"
+                android:text="N/A"
+                tools:layout_editor_absoluteX="29dp"
+                tools:layout_editor_absoluteY="92dp" />
+
+            <TextView
+                android:id="@+id/infrared3"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="110dp"
+                android:text="Infrared3"
                 tools:layout_editor_absoluteX="16dp"
                 tools:layout_editor_absoluteY="60dp" />
 
             <TextView
-                android:id="@+id/sonarRightField"
+                android:id="@+id/infrared3Field"
                 android:layout_width="337dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -102,7 +132,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="40dp"
                 android:layout_marginLeft="40dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="131dp"
                 android:text="N/A"
                 tools:layout_editor_absoluteX="29dp"
                 tools:layout_editor_absoluteY="92dp" />
@@ -132,7 +162,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="40dp"
                 android:layout_marginLeft="40dp"
-                android:layout_marginTop="172dp"
+                android:layout_marginTop="312dp"
                 android:text="N/A"
                 tools:layout_editor_absoluteX="29dp"
                 tools:layout_editor_absoluteY="92dp" />
@@ -194,7 +224,7 @@
                 tools:layout_editor_absoluteY="92dp" />
             <!-->copy <-->
             <TextView
-                android:id="@+id/distance"
+                android:id="@+id/infrared4"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -202,8 +232,8 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="30dp"
                 android:layout_marginLeft="30dp"
-                android:layout_marginTop="294dp"
-                android:text="Distance"
+                android:layout_marginTop="152dp"
+                android:text="Infrared4"
                 tools:layout_editor_absoluteX="16dp"
                 tools:layout_editor_absoluteY="64dp" />
 
@@ -236,7 +266,7 @@
                 tools:layout_editor_absoluteY="64dp" />
 
             <TextView
-                android:id="@+id/distanceField"
+                android:id="@+id/infrared4Field"
                 android:layout_width="337dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -244,7 +274,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="40dp"
                 android:layout_marginLeft="40dp"
-                android:layout_marginTop="314dp"
+                android:layout_marginTop="175dp"
                 android:text="N/A"
                 tools:layout_editor_absoluteX="29dp"
                 tools:layout_editor_absoluteY="92dp" />
@@ -286,7 +316,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="30dp"
                 android:layout_marginLeft="30dp"
-                android:layout_marginTop="153dp"
+                android:layout_marginTop="289dp"
                 android:text="Motor PWM"
                 tools:layout_editor_absoluteX="16dp"
                 tools:layout_editor_absoluteY="64dp" />
@@ -305,34 +335,7 @@
                 tools:layout_editor_absoluteX="29dp"
                 tools:layout_editor_absoluteY="92dp" />
             <!-->copy <-->
-            <TextView
-                android:id="@+id/sonarLeft"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="30dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="110dp"
-                android:text="Sonar Left"
-                android:textSize="14sp"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="64dp" />
 
-            <TextView
-                android:id="@+id/sonarLeftField"
-                android:layout_width="337dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/sonarLeft"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_marginStart="40dp"
-                android:layout_marginLeft="40dp"
-                android:layout_marginTop="1dp"
-                android:text="N/A"
-                tools:layout_editor_absoluteX="29dp"
-                tools:layout_editor_absoluteY="92dp" />
         </RelativeLayout>
     </ScrollView>
 
